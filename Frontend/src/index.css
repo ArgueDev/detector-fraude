@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primario: #37A4DD;
+  --color-secundario: #1A233C;
+  --color-neutro: #214080;
+}
+
+@layer base {
+  h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--color-neutro);
+  }
+
+  p {
+      font-size: 1.5rem;
+      font-weight: normal;
+  }
+}
