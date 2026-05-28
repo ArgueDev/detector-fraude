@@ -30,6 +30,8 @@ class Siniestro(Base):
     score_riesgo = Column(Integer, default=0)
     nivel_riesgo = Column(String(20), default='Verde')
     alertas_activadas = Column(Text)
+    etiqueta_fraude_simulada = Column(Integer, default=0)
+    tipo_fraude_simulado = Column(String(50), default='Ninguno')
 
     # Relaciones
     poliza = relationship('Poliza', back_populates='siniestro')
