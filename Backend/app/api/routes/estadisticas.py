@@ -9,7 +9,10 @@ import math
 import re
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import cast
+from sqlalchemy import Integer as SAInteger
 from sqlalchemy import func, desc, case
+from fastapi.responses import JSONResponse
 
 from ...core.database import get_db
 from ...model.siniestro  import Siniestro
@@ -22,6 +25,20 @@ router = APIRouter(prefix="/estadisticas", tags=["Estadisticas"])
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _clean_for_json(obj):
+    """Serializa recursivamente cualquier objeto limpiando nan/inf."""
+    if obj is None:
+        return None
+    if isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
+    if isinstance(obj, dict):
+        return {k: _clean_for_json(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_clean_for_json(i) for i in obj]
+    return obj
 
 def _porcentaje(parte: int, total: int) -> float:
     return round(parte / total * 100, 1) if total > 0 else 0.0
@@ -357,68 +374,58 @@ def borde_vigencia(
     limit:       int = Query(20, ge=1, le=100),
     db:          Session = Depends(get_db),
 ):
+    # Usar COALESCE para tratar NULL como 9999 directamente en SQL
+    inicio_safe = func.coalesce(Siniestro.dias_desde_inicio_poliza, 9999)
+    fin_safe    = func.coalesce(Siniestro.dias_desde_fin_poliza, 9999)
+
     items = (
         db.query(Siniestro)
         .filter(
-            Siniestro.dias_desde_inicio_poliza != None,  # noqa: E711
-            Siniestro.dias_desde_fin_poliza    != None,  # noqa: E711
+            (inicio_safe <= dias_umbral) | (fin_safe <= dias_umbral)
         )
-        .filter(
-            (Siniestro.dias_desde_inicio_poliza <= dias_umbral) |
-            (Siniestro.dias_desde_fin_poliza    <= dias_umbral)
-        )
-        .order_by(
-            func.least(
-                func.coalesce(Siniestro.dias_desde_inicio_poliza, 9999),
-                func.coalesce(Siniestro.dias_desde_fin_poliza, 9999),
-            )
-        )
+        .order_by(func.least(inicio_safe, fin_safe))
         .limit(limit)
         .all()
     )
 
     def _safe_row(s: Siniestro) -> dict:
-        """Serializa todos los campos del siniestro limpiando nan/inf."""
         alertas = []
         if s.alertas_activadas:
             try:
                 alertas = json.loads(s.alertas_activadas)
             except (json.JSONDecodeError, TypeError):
                 alertas = []
-
         return {
-            "id_siniestro":             s.id_siniestro,
-            "ramo":                     s.ramo,
-            "cobertura":                s.cobertura,
-            "estado":                   s.estado,
-            "sucursal":                 s.sucursal,
-            "nivel_riesgo":             s.nivel_riesgo,
-            "beneficiario":             s.beneficiario,
-            "alertas":                  alertas,
-            # Todos los numéricos pasan por _serial
-            "monto_reclamado":          _serial(s.monto_reclamado),
-            "monto_estimado":           _serial(s.monto_estimado),
-            "monto_pagado":             _serial(s.monto_pagado),
-            "score_riesgo":             _serial(s.score_riesgo),
-            "historial_siniestros_asegurado": _serial(s.historial_siniestros_asegurado),
-            # Fechas
-            "fecha_ocurrencia":         _serial(s.fecha_ocurrencia),
-            "fecha_reporte":            _serial(s.fecha_reporte),
-            # Días — usan _safe_dias para garantizar int
-            "dias_desde_inicio_poliza": _safe_dias(s.dias_desde_inicio_poliza),
-            "dias_desde_fin_poliza":    _safe_dias(s.dias_desde_fin_poliza),
-            "dias_entre_ocurrencia_reporte": _safe_dias(s.dias_entre_ocurrencia_reporte),
-            "borde_minimo_dias":        min(
-                _safe_dias(s.dias_desde_inicio_poliza),
-                _safe_dias(s.dias_desde_fin_poliza),
+            "id_siniestro":   s.id_siniestro,
+            "ramo":           s.ramo,
+            "cobertura":      s.cobertura,
+            "estado":         s.estado,
+            "sucursal":       s.sucursal,
+            "nivel_riesgo":   s.nivel_riesgo,
+            "beneficiario":   s.beneficiario,
+            "alertas":        alertas,
+            "monto_reclamado": _serial(s.monto_reclamado),
+            "monto_estimado":  _serial(s.monto_estimado),
+            "monto_pagado":    _serial(s.monto_pagado),
+            "score_riesgo":    _serial(s.score_riesgo),
+            "fecha_ocurrencia": _serial(s.fecha_ocurrencia),
+            "fecha_reporte":    _serial(s.fecha_reporte),
+            "dias_desde_inicio_poliza":       s.dias_desde_inicio_poliza,
+            "dias_desde_fin_poliza":          s.dias_desde_fin_poliza,
+            "dias_entre_ocurrencia_reporte":  s.dias_entre_ocurrencia_reporte,
+            "historial_siniestros_asegurado": s.historial_siniestros_asegurado,
+            "borde_minimo_dias": min(
+                s.dias_desde_inicio_poliza or 9999,
+                s.dias_desde_fin_poliza    or 9999,
             ),
         }
 
-    return {
+    resultado_limpio = _clean_for_json({
         "dias_umbral_usado": dias_umbral,
         "total_devuelto":    len(items),
         "items":             [_safe_row(s) for s in items],
-    }
+    })
+    return JSONResponse(content=resultado_limpio)
 
 # ── 9. Documentos faltantes en casos críticos ─────────────────────────────────
 
