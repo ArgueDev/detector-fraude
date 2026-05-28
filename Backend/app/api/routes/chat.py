@@ -6,19 +6,24 @@ Toda la lógica de contexto, historial y Gemini vive en ai_agent/.
 """
 
 from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi.responses import PlainTextResponse
+from pydantic import BaseModel, ConfigDict, Field
 
 from ...ai_agent.claims_agent import agent
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
 
-class PreguntaChat(BaseModel):
-    pregunta:     str
-    id_siniestro: str | None = None
+class ChatValue(BaseModel):
+    pregunta: str = Field(..., min_length=1)
 
-    class Config:
-        json_schema_extra = {
+
+class PreguntaChat(BaseModel):
+    summary: str = Field(..., min_length=1)
+    value: ChatValue
+
+    model_config = ConfigDict(
+        json_schema_extra={
             "examples": [
                 {
                     "summary": "Consulta global",
@@ -29,33 +34,25 @@ class PreguntaChat(BaseModel):
                 {
                     "summary": "Caso específico",
                     "value": {
-                        "pregunta":      "¿Por qué este caso tiene nivel rojo?",
-                        "id_siniestro":  "SIN-00042",
+                        "pregunta": "¿Por qué este caso tiene nivel rojo?",
                     },
                 },
             ]
         }
-
-
-@router.post("/", summary="Consulta en lenguaje natural al agente antifraude")
-def chat(payload: PreguntaChat):
-    """
-    Envía una pregunta al agente. El agente detecta automáticamente
-    si la pregunta menciona un siniestro específico (ej. SIN-00042)
-    y selecciona el contexto adecuado.
-
-    Mantiene memoria de los últimos 10 turnos de la conversación.
-    """
-    respuesta = agent.ask(
-        pregunta     = payload.pregunta,
-        id_siniestro = payload.id_siniestro,
     )
-    return {
-        "pregunta":       payload.pregunta,
-        "respuesta":      respuesta,
-        "id_siniestro":   payload.id_siniestro,
-        "turnos_memoria": agent.turnos_en_memoria,
-    }
+
+
+@router.post(
+    "/",
+    summary="Consulta en lenguaje natural al agente antifraude",
+    response_class=PlainTextResponse,
+)
+def chat(payload: PreguntaChat) -> str:
+    """
+    Recibe { summary, value: { pregunta } } y devuelve la respuesta IA como texto plano.
+    El agente detecta SIN-XXXXX en la pregunta para contexto de caso específico.
+    """
+    return agent.ask(pregunta=payload.value.pregunta)
 
 
 @router.post("/limpiar", summary="Reinicia el historial conversacional")
@@ -72,6 +69,6 @@ def limpiar_historial():
 @router.get("/historial", summary="Ver historial resumido (debug)")
 def ver_historial():
     return {
-        "turnos":    agent.turnos_en_memoria,
-        "mensajes":  agent.resumen_historial(),
+        "turnos": agent.turnos_en_memoria,
+        "mensajes": agent.resumen_historial(),
     }

@@ -9,6 +9,11 @@ import {
   YAxis,
 } from "recharts";
 import PageHeader from "../components/layout/PageHeader";
+import QueryError from "../components/ui/QueryError";
+import SkeletonCard from "../components/ui/skeletons/SkeletonCard";
+import DownloadReportButton from "../components/cases/DownloadReportButton";
+import { useRankingSiniestros } from "../hooks/useRankingSiniestros";
+import { useReportes } from "../hooks/useReportes";
 import {
   reportCards,
   reportMiniChartData,
@@ -23,20 +28,53 @@ const tooltipStyle = {
 };
 
 export default function ReportsPage() {
+  const reportesQuery = useReportes();
+  const rankingQuery = useRankingSiniestros(1);
+  const topSiniestro = rankingQuery.data?.items[0];
+
+  const resumenEjecutivo = reportesQuery.data
+    ? `ARIA analizó ${reportesQuery.data.total_siniestros.toLocaleString()} siniestros con un score promedio de ${reportesQuery.data.score_promedio}. El ${reportesQuery.data.porcentajes.verde}% presenta riesgo bajo y $${Math.round(reportesQuery.data.montos.en_casos_sospechosos).toLocaleString()} permanece en casos sospechosos (${reportesQuery.data.montos.porcentaje_en_riesgo}% del total reclamado).`
+    : reportsSummary.resumenEjecutivo;
+
   return (
     <div className="space-y-10">
       <PageHeader
         eyebrow="Reportes"
         title="Centro de informes"
-        description="Genera, exporta y consulta reportes ejecutivos de detección antifraude."
+        description="Genera, exporta y consulta reportes ejecutivos generados por ARIA."
       />
 
+      {reportesQuery.isError && (
+        <QueryError
+          message={reportesQuery.error.message}
+          onRetry={() => reportesQuery.refetch()}
+        />
+      )}
+
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {[
-          { label: "Reportes", value: reportsSummary.totalReportes },
-          { label: "Este mes", value: reportsSummary.generadosMes },
-          { label: "Exportaciones", value: reportsSummary.exportaciones },
-          { label: "Detección", value: "94.5%" },
+        {reportesQuery.isLoading
+          ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+          : [
+          {
+            label: "Total siniestros",
+            value: reportesQuery.data?.total_siniestros.toLocaleString() ?? "—",
+          },
+          {
+            label: "Casos rojos",
+            value: reportesQuery.data?.por_nivel.rojo ?? "—",
+          },
+          {
+            label: "Monto en riesgo",
+            value: reportesQuery.data
+              ? `$${Math.round(reportesQuery.data.montos.en_casos_sospechosos).toLocaleString()}`
+              : "—",
+          },
+          {
+            label: "Tasa detección",
+            value: reportesQuery.data
+              ? `${reportesQuery.data.porcentajes.verde}%`
+              : "—",
+          },
         ].map((m) => (
           <div
             key={m.label}
@@ -48,15 +86,29 @@ export default function ReportsPage() {
         ))}
       </div>
 
+      {topSiniestro && (
+        <div className="flex flex-col gap-4 rounded-3xl border border-zinc-800 bg-[#111827] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-white">
+              Reporte del caso prioritario
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              {topSiniestro.id_siniestro} · Score {topSiniestro.score_riesgo}
+            </p>
+          </div>
+          <DownloadReportButton siniestro={topSiniestro} fullWidth={false} />
+        </div>
+      )}
+
       <section className="rounded-3xl border border-zinc-800 bg-[#111827] p-6 sm:p-8">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/15 border border-red-500/20">
             <Icon icon="solar:cpu-bolt-bold" className="text-xl text-red-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Resumen ejecutivo IA</h2>
+            <h2 className="text-lg font-semibold text-white">Resumen ejecutivo ARIA</h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-              {reportsSummary.resumenEjecutivo}
+              {resumenEjecutivo}
             </p>
           </div>
         </div>
@@ -122,13 +174,20 @@ export default function ReportsPage() {
               </span>
             </div>
 
-            <button
-              type="button"
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 py-2.5 text-sm font-medium text-red-400 transition-all duration-200 hover:bg-red-500/20"
-            >
-              <Icon icon="solar:download-bold" />
-              Exportar PDF
-            </button>
+            {topSiniestro ? (
+              <div className="mt-5">
+                <DownloadReportButton siniestro={topSiniestro} />
+              </div>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="mt-5 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-zinc-800 py-2.5 text-sm text-zinc-600"
+              >
+                <Icon icon="solar:download-bold" />
+                Sin datos para exportar
+              </button>
+            )}
           </article>
         ))}
       </div>

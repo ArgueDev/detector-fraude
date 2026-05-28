@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import { BRAND_EYEBROW } from "../../lib/branding";
 
 type KpiBadge = {
   label: string;
@@ -14,7 +15,7 @@ type PageHeaderProps = {
 };
 
 export default function PageHeader({
-  eyebrow = "FRAUDIA",
+  eyebrow = BRAND_EYEBROW,
   title,
   description,
   badges,
