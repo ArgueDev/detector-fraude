@@ -1,6 +1,9 @@
+import type { z } from "zod";
+import type { estadisticasSchema } from "../../schemas/estadistica.schema";
 
-export default function EstadisticasCards({ data }) {
+type EstadisticasData = z.infer<typeof estadisticasSchema>;
 
+export default function EstadisticasCards({ data }: { data: EstadisticasData }) {
     const cards = [
         {
             title: "Total Siniestros",

@@ -1,46 +1,34 @@
-
-import EstadisticasCards from "../components/dashboard/EstadisticaCard";
-import RiesgoPieChart from "../components/dashboard/RiesgoPieChart";
-
-import useEstadisticas  from "../hooks/useEstadistica";
+import PageHeader from "../components/layout/PageHeader";
+import AIExplanationCard from "../components/dashboard/AIExplanationCard";
+import CriticalCasesTable from "../components/dashboard/CriticalCasesTable";
+import RiskDonutChart from "../components/dashboard/RiskDonutChart";
+import StatsCards from "../components/dashboard/StatsCards";
+import SuspiciousPatternsChart from "../components/dashboard/SuspiciousPatternsChart";
+import TopProvidersChart from "../components/dashboard/TopProvidersChart";
+import { heroKpiBadges, topCriticalCases } from "../mock/dashboardData";
 
 export default function DashboardPage() {
+  return (
+    <div className="space-y-10">
+      <PageHeader
+        title="Centro de control antifraude"
+        description="Visualiza y prioriza siniestros de alto riesgo con scoring inteligente, alertas en tiempo real y análisis asistido por IA."
+        badges={heroKpiBadges}
+      />
 
-    const {
-        data,
-        isLoading,
-        isError,
-    } = useEstadisticas();
+      <StatsCards />
 
-    if (isLoading) {
-        return <p className="text-white">Cargando...</p>;
-    }
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <RiskDonutChart />
+        <AIExplanationCard />
+      </div>
 
-    if (isError) {
-        return <p className="text-red-500">Error al cargar datos</p>;
-    }
+      <CriticalCasesTable cases={topCriticalCases} />
 
-    return (
-        <div className="space-y-10">
-
-            <div>
-                <h1 className="text-secundario mt-2">
-                    Métricas generales del semáforo de riesgo
-                </h1>
-            </div>
-
-            <EstadisticasCards data={data} />
-
-            <div className="bg-gray-200 rounded-3xl p-8 shadow-xl">
-
-                <h2 className="text-2xl font-semibold text-secundario mb-8">
-                    Distribución de Riesgo
-                </h2>
-
-                <RiesgoPieChart data={data} />
-
-            </div>
-
-        </div>
-    );
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <TopProvidersChart />
+        <SuspiciousPatternsChart />
+      </div>
+    </div>
+  );
 }

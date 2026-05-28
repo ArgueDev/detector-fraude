@@ -7,14 +7,7 @@
 }
 
 @layer base {
-  h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      color: var(--color-neutro);
-  }
-
-  p {
-      font-size: 1.5rem;
-      font-weight: normal;
+  body {
+    @apply antialiased text-zinc-100;
   }
 }

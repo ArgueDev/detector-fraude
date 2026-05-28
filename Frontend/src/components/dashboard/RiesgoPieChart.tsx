@@ -5,8 +5,12 @@ import {
     ResponsiveContainer,
     Legend
 } from "recharts";
+import type { z } from "zod";
+import type { estadisticasSchema } from "../../schemas/estadistica.schema";
 
-export default function RiesgoPieChart({ data }) {
+type EstadisticasData = z.infer<typeof estadisticasSchema>;
+
+export default function RiesgoPieChart({ data }: { data: EstadisticasData }) {
 
     const chartData = [
         {
@@ -38,7 +42,7 @@ export default function RiesgoPieChart({ data }) {
                     innerRadius={70}
                     paddingAngle={5}
                     label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(1)}%`
+                        `${name} ${((percent ?? 0) * 100).toFixed(1)}%`
                     }
                 />
 
