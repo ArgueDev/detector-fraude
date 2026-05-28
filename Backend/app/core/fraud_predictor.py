@@ -1,6 +1,7 @@
 import joblib
 import os
 import numpy as np
+import pandas as pd
 from sqlalchemy.orm import Session
 from ..model.siniestro import Siniestro
 from ..model.poliza import Poliza
@@ -61,7 +62,7 @@ def predecir_fraude(siniestro: Siniestro, poliza: Poliza, asegurado: Asegurado) 
         'deducible': poliza.deducible or 0,
     }
 
-    X = np.array([[row[f] for f in features]])
+    X = pd.DataFrame([row])[features]
     score_ml = float(rf_model.predict_proba(X)[0][1])
     es_fraude = score_ml >= 0.5
 

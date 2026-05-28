@@ -1,6 +1,15 @@
-import json
+"""
+Explicabilidad del score de riesgo mediante Gemini.
+
+Genera un informe ejecutivo legible para el analista de siniestros,
+explicando POR QUÉ un caso fue marcado con determinado nivel de riesgo.
+
+IMPORTANTE: El lenguaje siempre usa "requiere revisión" / "presenta señales
+de riesgo". Nunca emite acusaciones de fraude.
+"""
+
 from google import genai
-from ...core.config import GEMINI_API_KEY
+from ..core.config import GEMINI_API_KEY
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -15,7 +24,22 @@ class FraudeExplainer:
         alertas_activadas: list[str],
         nivel_riesgo: str,
     ) -> str:
+        """
+        Genera una explicación en lenguaje natural del score asignado.
 
+        Parámetros
+        ----------
+        siniestro         : ORM Siniestro con todos sus campos.
+        score_reglas      : Puntaje 0-100 del motor de reglas.
+        score_ml          : Probabilidad 0.0-1.0 del modelo Random Forest.
+        alertas_activadas : Lista de strings con los motivos activados.
+        nivel_riesgo      : 'Verde' | 'Amarillo' | 'Rojo'
+
+        Retorna
+        -------
+        str  — Informe ejecutivo en Markdown listo para mostrar en el dashboard.
+             En caso de fallo de Gemini devuelve el fallback determinístico.
+        """
         prompt = f"""
 Eres un asistente experto en detección de fraude para una compañía de seguros.
 Redacta un informe ejecutivo profesional para un analista de siniestros.
@@ -52,7 +76,7 @@ Nunca acuses de fraude directamente; usa lenguaje como "requiere revisión" o "p
 """
         try:
             response = client.models.generate_content(
-                model="gemini-2.5-flash",   # ← consistente con el resto del proyecto
+                model="gemini-2.5-flash",
                 contents=prompt,
             )
             return response.text
@@ -70,6 +94,10 @@ Nunca acuses de fraude directamente; usa lenguaje como "requiere revisión" o "p
         alertas_activadas: list[str],
         nivel_riesgo: str,
     ) -> str:
+        """
+        Explicación determinística cuando Gemini no está disponible.
+        No depende de ninguna API externa — siempre funciona.
+        """
         texto = f"⚠️ Nivel de Riesgo: **{nivel_riesgo}**\n\n"
         texto += (
             f"El siniestro {siniestro.id_siniestro} obtuvo un puntaje de "
@@ -87,4 +115,6 @@ Nunca acuses de fraude directamente; usa lenguaje como "requiere revisión" o "p
         return texto
 
 
+# Singleton — se inicializa una vez al arrancar la aplicación.
+# La API key se lee de config en tiempo de importación.
 explainer = FraudeExplainer()
