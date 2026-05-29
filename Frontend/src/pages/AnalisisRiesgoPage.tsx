@@ -16,7 +16,6 @@ import {
   useProveedoresRiesgo,
   useRamosRiesgo,
   useCiudadesRiesgo,
-  useDocumentosFaltantes,
   usePatronesRepetidosRiesgo,
 } from "../hooks/useAnalisisRiesgo";
 
@@ -26,7 +25,6 @@ export default function AnalisisRiesgoPage() {
   const proveedores = useProveedoresRiesgo(6);
   const ramos = useRamosRiesgo();
   const ciudades = useCiudadesRiesgo(6);
-  const documentos = useDocumentosFaltantes();
   const patrones = usePatronesRepetidosRiesgo();
 
   const proveedoresData = (proveedores.data ?? []).map((item) => ({
