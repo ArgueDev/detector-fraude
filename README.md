@@ -126,5 +126,11 @@ La documentación interactiva de la API estará disponible en: `http://localhost
 * **Privacidad y Ética:** Uso de Fake Data (Sintética) y protección del principio de presunción de inocencia del cliente.
 
 ---
+
+## ⚠️ Limitaciones
+- La API pública tiene límite de 100 peticiones por minuto.
+- Los datos son sintéticos; no representan casos reales.
+- El modelo LLM puede generar respuestas no verificadas; siempre validar con analista.
+
 **Desarrollado para el HackIAthon Aseguradora del Sur 2026**
 **@Ctrl + Alt + IA**
