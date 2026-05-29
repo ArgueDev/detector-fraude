@@ -139,7 +139,7 @@ function formatCurrency(value: number): string {
   return `$${Math.round(value).toLocaleString("es-EC")}`;
 }
 
-function generateMonthlyReport(doc: jsPDF, report: ReportCard, resumen: ReportesResumen, margin: number): void {
+function generateMonthlyReport(doc: jsPDF, resumen: ReportesResumen, margin: number): void {
   let y = 60;
   y = renderKpiCards(doc, resumen, margin, y);
   y = renderSectionHeader(doc, "Resumen ejecutivo", margin, y);
@@ -184,7 +184,7 @@ function generateMonthlyReport(doc: jsPDF, report: ReportCard, resumen: Reportes
   ], margin, y);
 }
 
-function generateProvidersReport(doc: jsPDF, report: ReportCard, resumen: ReportesResumen, margin: number): void {
+function generateProvidersReport(doc: jsPDF, resumen: ReportesResumen, margin: number): void {
   let y = 60;
   y = renderKpiCards(doc, resumen, margin, y);
   y = renderSectionHeader(doc, "Análisis de proveedores", margin, y);
@@ -226,7 +226,7 @@ function generateProvidersReport(doc: jsPDF, report: ReportCard, resumen: Report
   ], margin, y);
 }
 
-function generatePatternsReport(doc: jsPDF, report: ReportCard, resumen: ReportesResumen, margin: number): void {
+function generatePatternsReport(doc: jsPDF, resumen: ReportesResumen, margin: number): void {
   let y = 60;
   y = renderKpiCards(doc, resumen, margin, y);
   y = renderSectionHeader(doc, "Patrones sospechosos principales", margin, y);
@@ -319,19 +319,19 @@ export function downloadGlobalReportPdf(
 
   switch (reportType) {
     case "monthly":
-      generateMonthlyReport(doc, report, resumen, margin);
+      generateMonthlyReport(doc, resumen, margin);
       break;
     case "providers":
-      generateProvidersReport(doc, report, resumen, margin);
+      generateProvidersReport(doc, resumen, margin);
       break;
     case "patterns":
-      generatePatternsReport(doc, report, resumen, margin);
+      generatePatternsReport(doc, resumen, margin);
       break;
     case "audit":
       generateAuditReport(doc, report, resumen, margin);
       break;
     default:
-      generateMonthlyReport(doc, report, resumen, margin);
+      generateMonthlyReport(doc, resumen, margin);
   }
 
   renderFooter(doc, margin);

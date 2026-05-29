@@ -1,4 +1,5 @@
 import { mockCases } from "./casesData";
+import type { ReportCard } from "../types/reportes.types";
 
 export const dashboardStats = [
   {
@@ -108,7 +109,7 @@ export const reportsSummary = {
     "Durante el último trimestre, ARIA detectó un incremento del 12% en siniestros sospechosos, concentrados en ramos Vida y Automóvil. Los proveedores con mayor concentración de alertas operan principalmente en Cuenca y Guayaquil. Se recomienda reforzar controles en documentación de siniestros de robo e incendio.",
 };
 
-export const reportCards = [
+export const reportCards: ReportCard[] = [
   {
     id: "rep-1",
     reportType: "monthly",
