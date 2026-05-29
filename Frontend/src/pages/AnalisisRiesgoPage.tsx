@@ -45,16 +45,6 @@ export default function AnalisisRiesgoPage() {
     alertas: item.total_alertas,
   }));
 
-  const _docsData = (documentos.data ?? []).map((item) => ({
-    name: item.tipo_documento,
-    value: item.no_entregados,
-  }));
-
-  const _patronesData = (patrones.data ?? []).map((item) => ({
-    name: item.patron,
-    value: item.frecuencia,
-  }));
-
   return (
     <div className="space-y-8">
       <PageHeader
