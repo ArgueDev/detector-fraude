@@ -9,7 +9,9 @@ import {
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: "solar:chart-bold", end: true },
-  { to: "/casos", label: "Casos Críticos", icon: "solar:danger-bold", end: false },
+  { to: "/analisis-riesgo", label: "Análisis de Riesgo", icon: "solar:graph-bold", end: false },
+  { to: "/casos", label: "Casos Críticos", icon: "solar:shield-warning-bold", end: false },
+  { to: "/casos-criticos", label: "Casos Críticos (Detalle)", icon: "solar:danger-triangle-bold", end: false },
   { to: "/ia", label: "AI Assistant", icon: "solar:chat-round-bold", end: false },
   { to: "/reportes", label: "Reportes", icon: "solar:file-text-bold", end: false },
 ];
