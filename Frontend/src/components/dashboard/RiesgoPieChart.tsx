@@ -6,7 +6,7 @@ import {
     Legend
 } from "recharts";
 import type { z } from "zod";
-import type { estadisticasSchema } from "../../schemas/estadistica.schema";
+import type { estadisticasSchema } from "../../schemas/estadisticas.schema";
 
 type EstadisticasData = z.infer<typeof estadisticasSchema>;
 

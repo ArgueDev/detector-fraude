@@ -48,4 +48,4 @@ export const suggestedQuestions = [
 ];
 
 export const mockAssistantReply =
-  "Según el análisis de FRAUDIA, los proveedores con más alertas son **Taller AutoExpress** (12), **Clínica San Rafael** (9) y **Repuestos del Sur** (7). Te recomiendo revisar el informe de proveedores en la sección Reportes.";
+  "Según el análisis de **ARIA**, los proveedores con más alertas son **Taller AutoExpress** (12), **Clínica San Rafael** (9) y **Repuestos del Sur** (7). Te recomiendo revisar el informe de proveedores en la sección Reportes.";

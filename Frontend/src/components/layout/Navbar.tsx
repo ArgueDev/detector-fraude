@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useLocation } from "react-router-dom";
+import { BRAND_NAME } from "../../lib/branding";
 import { getRouteMeta } from "../../lib/routeMeta";
 
 export default function Navbar() {
@@ -29,9 +30,9 @@ export default function Navbar() {
 
         <div
           className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white shadow-lg shadow-red-500/20"
-          title="Asistente IA"
+          title={`${BRAND_NAME} · Asistente inteligente`}
         >
-          IA
+          AR
         </div>
       </div>
     </header>

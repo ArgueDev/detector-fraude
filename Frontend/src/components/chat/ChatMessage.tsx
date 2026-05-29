@@ -1,8 +1,8 @@
 import { Icon } from "@iconify/react";
-import type { ChatMessage as ChatMessageType } from "../../mock/chatData";
+import type { ChatUiMessage } from "../../types/chat.types";
 
 type ChatMessageProps = {
-  message: ChatMessageType;
+  message: ChatUiMessage;
 };
 
 function formatContent(content: string) {
@@ -30,7 +30,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
       {!isUser && (
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-lg shadow-red-500/20">
-          IA
+          AR
         </div>
       )}
       <div

@@ -1,9 +1,9 @@
 import { Icon } from "@iconify/react";
-import type { CaseAlert } from "../../mock/casesData";
+import type { ParsedAlert } from "../../types/siniestro.types";
 import RiskBadge from "../dashboard/RiskBadge";
 
 type AlertsListProps = {
-  alerts: CaseAlert[];
+  alerts: ParsedAlert[];
 };
 
 const borderByLevel: Record<string, string> = {
@@ -37,7 +37,6 @@ export default function AlertsList({ alerts }: AlertsListProps) {
               <RiskBadge level={alert.nivel} />
             </div>
             <p className="mt-1 text-xs text-zinc-400">{alert.descripcion}</p>
-            <p className="mt-2 font-mono text-[10px] text-zinc-600">{alert.id}</p>
           </div>
         </li>
       ))}

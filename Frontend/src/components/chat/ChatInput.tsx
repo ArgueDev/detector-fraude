@@ -29,7 +29,7 @@ export default function ChatInput({
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Pregunta a FRAUDIA IA sobre siniestros, riesgos o patrones..."
+          placeholder="Pregunta a ARIA sobre siniestros, riesgos o patrones..."
           disabled={disabled}
           className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none disabled:opacity-50"
         />

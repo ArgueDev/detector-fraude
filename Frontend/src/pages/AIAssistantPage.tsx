@@ -5,9 +5,9 @@ export default function AIAssistantPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="FRAUDIA IA"
+        eyebrow="ARIA AI"
         title="Asistente inteligente"
-        description="Consulta patrones de fraude, scores de riesgo y análisis de casos en lenguaje natural."
+        description="Consulta a ARIA sobre patrones de fraude, scores de riesgo y análisis de casos en lenguaje natural."
       />
       <ChatContainer />
     </div>

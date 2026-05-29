@@ -1,29 +1,41 @@
-import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import type { FraudCase } from "../../mock/casesData";
+import type { CriticalCase } from "../../types/criticalCase.types";
 import RiskBadge from "./RiskBadge";
 
-export type CriticalCase = Pick<
-  FraudCase,
-  | "id"
-  | "id_siniestro"
-  | "ramo"
-  | "score_riesgo"
-  | "nivel_riesgo"
-  | "cobertura"
-  | "sucursal"
-  | "monto_reclamado"
->;
+export type { CriticalCase };
 
 type CriticalCasesTableProps = {
   cases: CriticalCase[];
   showAction?: boolean;
+  onVerDetalle?: (idSiniestro: string) => void;
+  isLoading?: boolean;
 };
 
 export default function CriticalCasesTable({
   cases,
   showAction = true,
+  onVerDetalle,
+  isLoading = false,
 }: CriticalCasesTableProps) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (cases.length === 0) {
+    return (
+      <section className="overflow-hidden rounded-3xl border border-zinc-800 bg-[#111827]">
+        <div className="border-b border-zinc-800 px-6 py-6 sm:px-8">
+          <h2 className="text-xl font-semibold text-white">
+            Casos Críticos Priorizados
+          </h2>
+        </div>
+        <p className="px-8 py-12 text-center text-sm text-zinc-500">
+          No hay casos críticos para mostrar
+        </p>
+      </section>
+    );
+  }
+
   return (
     <section className="overflow-hidden rounded-3xl border border-zinc-800 bg-[#111827]">
       <div className="border-b border-zinc-800 px-6 py-6 sm:px-8">
@@ -83,13 +95,14 @@ export default function CriticalCasesTable({
                 </td>
                 {showAction && (
                   <td className="px-6 py-5 text-right sm:px-8">
-                    <Link
-                      to={`/casos?caso=${item.id_siniestro}`}
+                    <button
+                      type="button"
+                      onClick={() => onVerDetalle?.(item.id_siniestro)}
                       className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-800/50 px-3 py-1.5 text-xs font-medium text-zinc-300 transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
                     >
-                      Ver
+                      Ver Detalle
                       <Icon icon="solar:arrow-right-linear" className="text-sm" />
-                    </Link>
+                    </button>
                   </td>
                 )}
               </tr>

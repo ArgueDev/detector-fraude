@@ -26,6 +26,7 @@ from ...model.asegurado import Asegurado
 from ...core.fraud_rules import evaluar_reglas
 from ...core.fraud_predictor import predecir_fraude, calcular_score_final
 from ...explainability.explain_score import explainer
+from ...schemas.siniestro import serializar_siniestro
 
 router = APIRouter(prefix="/siniestros", tags=["Siniestros"])
 
@@ -106,7 +107,7 @@ def listar_siniestros(
     q     = q.order_by(desc(Siniestro.score_riesgo))
     total = q.count()
     items = q.offset(offset).limit(limit).all()
-    return {"total": total, "items": items}
+    return {"total": total, "items": [serializar_siniestro(s) for s in items]}
 
 
 @router.get("/ranking", summary="Top N siniestros ordenados por score de riesgo")
@@ -120,7 +121,7 @@ def ranking_riesgo(
         .limit(limit)
         .all()
     )
-    return {"items": items}
+    return {"items": [serializar_siniestro(s) for s in items]}
 
 
 @router.post(
@@ -156,7 +157,7 @@ def detalle_siniestro(
     ).first()
     if not s:
         raise HTTPException(status_code=404, detail="Siniestro no encontrado")
-    return s
+    return serializar_siniestro(s)
 
 
 @router.post(

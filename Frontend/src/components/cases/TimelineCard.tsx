@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import type { TimelineEvent } from "../../mock/casesData";
+import type { TimelineEvent } from "../../types/timeline.types";
 
 type TimelineCardProps = {
   events: TimelineEvent[];

@@ -1,3 +1,5 @@
+import { BRAND_NAME, BRAND_TAGLINE } from "./branding";
+
 export type RouteMeta = {
   title: string;
   subtitle: string;
@@ -5,24 +7,24 @@ export type RouteMeta = {
 
 export const routeMetaMap: Record<string, RouteMeta> = {
   "/": {
-    title: "Dashboard Antifraude",
-    subtitle: "Monitoreo inteligente de siniestros y riesgos",
+    title: "Dashboard de Riesgo",
+    subtitle: `${BRAND_NAME} · ${BRAND_TAGLINE}`,
   },
   "/dashboard": {
-    title: "Dashboard Antifraude",
-    subtitle: "Monitoreo inteligente de siniestros y riesgos",
+    title: "Dashboard de Riesgo",
+    subtitle: `${BRAND_NAME} · ${BRAND_TAGLINE}`,
   },
   "/casos": {
     title: "Casos Críticos",
-    subtitle: "Panel de investigación y priorización de siniestros",
+    subtitle: `${BRAND_NAME} · Panel de investigación y priorización`,
   },
   "/ia": {
-    title: "AI Assistant",
-    subtitle: "Asistente inteligente para análisis antifraude",
+    title: "ARIA Assistant",
+    subtitle: "Agente conversacional de análisis antifraude",
   },
   "/reportes": {
     title: "Reportes",
-    subtitle: "Informes ejecutivos y exportación de métricas",
+    subtitle: `${BRAND_NAME} · Informes ejecutivos y exportación`,
   },
 };
 

@@ -45,7 +45,7 @@ export const dashboardStats = [
 
 export const heroKpiBadges = [
   { label: "Alertas activas", value: "23", icon: "solar:bell-bing-bold" },
-  { label: "IA activa", value: "ON", icon: "solar:cpu-bolt-bold" },
+  { label: "ARIA activa", value: "ON", icon: "solar:cpu-bolt-bold" },
   { label: "Tasa detección", value: "94.5%", icon: "solar:target-bold" },
 ];
 
@@ -105,13 +105,13 @@ export const reportsSummary = {
   generadosMes: 4,
   exportaciones: 28,
   resumenEjecutivo:
-    "Durante el último trimestre, FRAUDIA detectó un incremento del 12% en siniestros sospechosos, concentrados en ramos Vida y Automóvil. Los proveedores con mayor concentración de alertas operan principalmente en Cuenca y Guayaquil. Se recomienda reforzar controles en documentación de siniestros de robo e incendio.",
+    "Durante el último trimestre, ARIA detectó un incremento del 12% en siniestros sospechosos, concentrados en ramos Vida y Automóvil. Los proveedores con mayor concentración de alertas operan principalmente en Cuenca y Guayaquil. Se recomienda reforzar controles en documentación de siniestros de robo e incendio.",
 };
 
 export const reportCards = [
   {
     id: "rep-1",
-    titulo: "Informe Mensual Antifraude",
+    titulo: "Informe Mensual ARIA",
     descripcion: "Resumen ejecutivo de métricas, alertas y casos críticos del mes.",
     fecha: "Mayo 2026",
     tipo: "PDF",
