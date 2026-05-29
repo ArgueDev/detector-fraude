@@ -111,6 +111,7 @@ export const reportsSummary = {
 export const reportCards = [
   {
     id: "rep-1",
+    reportType: "monthly",
     titulo: "Informe Mensual ARIA",
     descripcion: "Resumen ejecutivo de métricas, alertas y casos críticos del mes.",
     fecha: "Mayo 2026",
@@ -120,6 +121,7 @@ export const reportCards = [
   },
   {
     id: "rep-2",
+    reportType: "providers",
     titulo: "Análisis de Proveedores",
     descripcion: "Ranking de proveedores con mayor índice de alertas activas.",
     fecha: "Abril 2026",
@@ -129,6 +131,7 @@ export const reportCards = [
   },
   {
     id: "rep-3",
+    reportType: "patterns",
     titulo: "Patrones Sospechosos Q1",
     descripcion: "Detección de patrones recurrentes y tendencias por ramo.",
     fecha: "Marzo 2026",
@@ -138,6 +141,7 @@ export const reportCards = [
   },
   {
     id: "rep-4",
+    reportType: "audit",
     titulo: "Auditoría Casos Críticos",
     descripcion: "Detalle forense de los 10 casos con mayor score de riesgo.",
     fecha: "Mayo 2026",

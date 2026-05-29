@@ -11,8 +11,7 @@ import {
 import PageHeader from "../components/layout/PageHeader";
 import QueryError from "../components/ui/QueryError";
 import SkeletonCard from "../components/ui/skeletons/SkeletonCard";
-import DownloadReportButton from "../components/cases/DownloadReportButton";
-import { useRankingSiniestros } from "../hooks/useRankingSiniestros";
+import DownloadExecutiveReportButton from "../components/reports/DownloadExecutiveReportButton";
 import { useReportes } from "../hooks/useReportes";
 import {
   reportCards,
@@ -29,8 +28,6 @@ const tooltipStyle = {
 
 export default function ReportsPage() {
   const reportesQuery = useReportes();
-  const rankingQuery = useRankingSiniestros(1);
-  const topSiniestro = rankingQuery.data?.items[0];
 
   const resumenEjecutivo = reportesQuery.data
     ? `ARIA analizó ${reportesQuery.data.total_siniestros.toLocaleString()} siniestros con un score promedio de ${reportesQuery.data.score_promedio}. El ${reportesQuery.data.porcentajes.verde}% presenta riesgo bajo y $${Math.round(reportesQuery.data.montos.en_casos_sospechosos).toLocaleString()} permanece en casos sospechosos (${reportesQuery.data.montos.porcentaje_en_riesgo}% del total reclamado).`
@@ -85,20 +82,6 @@ export default function ReportsPage() {
           </div>
         ))}
       </div>
-
-      {topSiniestro && (
-        <div className="flex flex-col gap-4 rounded-3xl border border-zinc-800 bg-[#111827] p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-sm font-semibold text-white">
-              Reporte del caso prioritario
-            </h2>
-            <p className="mt-1 text-xs text-zinc-500">
-              {topSiniestro.id_siniestro} · Score {topSiniestro.score_riesgo}
-            </p>
-          </div>
-          <DownloadReportButton siniestro={topSiniestro} fullWidth={false} />
-        </div>
-      )}
 
       <section className="rounded-3xl border border-zinc-800 bg-[#111827] p-6 sm:p-8">
         <div className="flex items-start gap-3">
@@ -174,20 +157,13 @@ export default function ReportsPage() {
               </span>
             </div>
 
-            {topSiniestro ? (
-              <div className="mt-5">
-                <DownloadReportButton siniestro={topSiniestro} />
-              </div>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="mt-5 inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-zinc-800 py-2.5 text-sm text-zinc-600"
-              >
-                <Icon icon="solar:download-bold" />
-                Sin datos para exportar
-              </button>
-            )}
+            <div className="mt-5">
+              <DownloadExecutiveReportButton
+                reportType={report.reportType}
+                report={report}
+                resumen={reportesQuery.data}
+              />
+            </div>
           </article>
         ))}
       </div>

@@ -1,9 +1,5 @@
 import { obtenerEstadisticas } from "./estadisticasApi";
-import type { Estadisticas } from "../types/estadisticas.types";
-
-export type ReportesResumen = Estadisticas & {
-  tasa_deteccion: number;
-};
+import type { ReportesResumen } from "../types/reportes.types";
 
 export async function obtenerResumenReportes(): Promise<ReportesResumen> {
   const estadisticas = await obtenerEstadisticas();
