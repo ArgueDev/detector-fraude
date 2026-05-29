@@ -45,12 +45,12 @@ export default function AnalisisRiesgoPage() {
     alertas: item.total_alertas,
   }));
 
-  const docsData = (documentos.data ?? []).map((item) => ({
+  const _docsData = (documentos.data ?? []).map((item) => ({
     name: item.tipo_documento,
     value: item.no_entregados,
   }));
 
-  const patronesData = (patrones.data ?? []).map((item) => ({
+  const _patronesData = (patrones.data ?? []).map((item) => ({
     name: item.patron,
     value: item.frecuencia,
   }));
