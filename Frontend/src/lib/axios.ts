@@ -4,7 +4,7 @@ export const API_TIMEOUT_MS = 60_000;
 export const CHAT_TIMEOUT_MS = 120_000;
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: API_TIMEOUT_MS,
   headers: {
     "Content-Type": "application/json",
