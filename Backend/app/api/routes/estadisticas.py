@@ -378,15 +378,20 @@ def borde_vigencia(
     inicio_safe = func.coalesce(Siniestro.dias_desde_inicio_poliza, 9999)
     fin_safe    = func.coalesce(Siniestro.dias_desde_fin_poliza, 9999)
 
-    items = (
+    items_raw = (
         db.query(Siniestro)
         .filter(
             (inicio_safe <= dias_umbral) | (fin_safe <= dias_umbral)
         )
-        .order_by(func.least(inicio_safe, fin_safe))
-        .limit(limit)
         .all()
     )
+    items_raw.sort(
+        key=lambda s: min(
+            s.dias_desde_inicio_poliza or 9999,
+            s.dias_desde_fin_poliza or 9999,
+        )
+    )
+    items = items_raw[:limit]
 
     def _safe_row(s: Siniestro) -> dict:
         alertas = []

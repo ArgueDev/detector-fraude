@@ -143,10 +143,13 @@ def _regla_rf03_lista_restrictiva(db: Session, siniestro: Siniestro) -> tuple[st
         return None, ""
     proveedor = db.query(Proveedor).filter(
         Proveedor.id_proveedor == siniestro.beneficiario,
-        Proveedor.porcentaje_casos_observados >= 50
+        Proveedor.porcentaje_casos_observados >= 50,
     ).first()
     if proveedor:
-        return 'Rojo', f"RF-03: Beneficiario/Proveedor {siniestro.beneficiario} coincide con lista restrictiva"
+        return (
+            'Rojo',
+            f"RF-03: Beneficiario/Proveedor {siniestro.beneficiario} coincide con lista restrictiva",
+        )
     return None, ""
 
 
