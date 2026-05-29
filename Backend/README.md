@@ -73,10 +73,10 @@ flowchart TB
     end
 
     subgraph API["FastAPI — app/main.py"]
-        SIN[/api/v1/siniestros]
-        EST[/api/v1/estadisticas]
-        PROV[/api/v1/proveedores]
-        CHAT[/api/v1/chat]
+        SIN["/api/v1/siniestros"]
+        EST["/api/v1/estadisticas"]
+        PROV["/api/v1/proveedores"]
+        CHAT["/api/v1/chat"]
     end
 
     subgraph Motor
